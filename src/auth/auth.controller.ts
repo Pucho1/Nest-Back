@@ -6,6 +6,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterDto } from './dto/register.dto';
 import { AuthGuards } from './guards/auth-guards.guard';
 import { UserLogin } from './interfaces/user-login';
+import { CheckEmailDto } from './dto/check-email.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +32,6 @@ export class AuthController {
   findAll(@Request() req: Request) {
     // const user = req['user'];
     // return user;
-
     return this.authService.findAll();
   };
 
@@ -46,18 +46,8 @@ export class AuthController {
     };
   };
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.authService.findOne(+id);
-  // };
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // };
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.authService.remove(+id);
-  // };
+  @Post('/check-email')
+  findOne(@Body() email: CheckEmailDto) {
+    return this.authService.findOneEmail(email);
+  };
 };

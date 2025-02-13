@@ -1,10 +1,13 @@
-version: '3'
-services:
-  db:
+version: '3.8'
+services: 
+  mongo:
+    image: mongo:8.0.4
     container_name: mean-db
-    image: mongo:5.0.16
     volumes:
       - ./mongo:/data/db
     ports:
       - "27017:27017"
-    restart: always
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

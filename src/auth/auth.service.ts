@@ -14,6 +14,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtPayload } from './interfaces/jwt-paiload';
 import { RegisterDto } from './dto/register.dto';
 import { UserLogin } from './interfaces/user-login';
+import { CheckEmailDto } from './dto/check-email.dto';
 
 @Injectable()
 export class AuthService {
@@ -77,25 +78,24 @@ export class AuthService {
     if( !bcryptjs.compareSync( password , haveUser.password) ){
       throw new UnauthorizedException('error de autenticacion  --pass invalid')
     };
-
-    const { password: _, ...user} =haveUser.toJSON() 
-
-
+    const { password: _, ...user} =haveUser.toJSON();
+  
     return {
       user,
       token: this.tokentPaiload( { id: user._id.toString() } ),
     };
   };
 
+  /**
+   * Crea un nuevo usuario en BD
+   * @param RegisterDto Datsos del usuario registrar
+   * @returns El usuario nuevo y el token de auth para ese usuario
+   */
   async register(RegisterDto: RegisterDto): Promise<UserLogin>{
-
     const user = await this.create(RegisterDto);
-    const token =  this.tokentPaiload( { id: user._id! } )
+    const token =  this.tokentPaiload( { id: user._id! } );
 
-    return {
-      user,
-      token,
-    };
+    return { user, token };
   };
 
 
@@ -103,37 +103,43 @@ export class AuthService {
     return this.userModel.find(); 
   };
 
+  /**
+   * Deveulve un usuario si exixte en bd segun el id pasado
+   * @param id id del usuario recibido del front
+   * @returns un objeto de tipo usuario
+   */
   async findUserById(id: string){
     const user = await this.userModel.findById(id);
 
-    // if (!user) {
-    //   throw new BadRequestException('User not found');
-    // }
-
     const { password, ...rest } = user!.toJSON();
-
     return rest;
   };
 
-
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  /**
+   * Comprueba si email pasado existe en BD
+   * @param CheckEmailDto Email recibido del front previamente validaddo
+   * @returns boleano
+   */
+  async findOneEmail(CheckEmailDto: CheckEmailDto): Promise<boolean> {
+    const { email } = CheckEmailDto;
+    const haveUser = await this.userModel.findOne({ email })
+    return !!haveUser;
   };
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  };
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  };
-/**
- * @param payload es el id del user
- * @returns un tokent valido para el usuario autenticado
- */
+  /**
+   * @param payload es el id del user
+   * @returns un tokent valido para el usuario autenticado
+   */
   tokentPaiload(payload: JwtPayload){
     const access_token= this.jwtService.sign(payload)
     return access_token;
   };
+
+  // update(id: number, updateAuthDto: UpdateAuthDto) {
+  //   return `This action updates a #${id} auth`;
+  // };
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} auth`;
+  // };
 };
