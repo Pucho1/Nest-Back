@@ -1,11 +1,10 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { User } from './entities/user.entity';
 
 import * as bcryptjs from 'bcryptjs';
@@ -76,7 +75,7 @@ export class AuthService {
     };
 
     if( !bcryptjs.compareSync( password , haveUser.password) ){
-      throw new UnauthorizedException('error de autenticacion  --pass invalid')
+      throw new UnauthorizedException('Error de autenticacion  --pass invalid')
     };
     const { password: _, ...user} =haveUser.toJSON();
   
@@ -85,7 +84,7 @@ export class AuthService {
       token: this.tokentPaiload( { id: user._id.toString() } ),
     };
   };
-
+ 
   /**
    * Crea un nuevo usuario en BD
    * @param RegisterDto Datsos del usuario registrar
@@ -111,7 +110,9 @@ export class AuthService {
   async findUserById(id: string){
     const user = await this.userModel.findById(id);
 
+    if (!user) return null;
     const { password, ...rest } = user!.toJSON();
+
     return rest;
   };
 

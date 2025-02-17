@@ -20,30 +20,29 @@ export class AuthGuards implements CanActivate {
     const token = this.extractTokenFromHeader(request);
  
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('There is no bearer token');
     };
-
+  
     try {
-      // ---->  verfico qiue el token sea valido, envio el token y la llave de creacion
+
+      // ---->  verfico que el token sea valido, envio el token y la llave de creacion
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
         secret: process.env.JWT_SEED,
       });
 
-      // obtengo el usuario ue est haciendo la peicion 
+      // obtengo el usuario que esta haciendo la peicion 
       const user = await this.authService.findUserById(payload.id);
 
       if(!user) throw new  UnauthorizedException('Usuario no existe');
-      if(!user.isActive) throw new  UnauthorizedException('Usuario no acrtivo');
+      if(!user.isActive) throw new  UnauthorizedException('Usuario no activo');
 
       // se lo asigno a la response la cual tengo acceso a ella en el controlador 
       request['user'] = user;
 
-      console.log(payload);
-
-    } catch (error) { 
-      throw new UnauthorizedException(); 
+    } catch (error) {
+        const errorMessage = error.message || 'Error desconocido';
+        throw new UnauthorizedException(errorMessage);
     };
-
 
     return true;
   };

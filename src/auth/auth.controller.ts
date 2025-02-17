@@ -7,6 +7,7 @@ import { RegisterDto } from './dto/register.dto';
 import { AuthGuards } from './guards/auth-guards.guard';
 import { UserLogin } from './interfaces/user-login';
 import { CheckEmailDto } from './dto/check-email.dto';
+import { console } from 'inspector';
 
 @Controller('auth')
 export class AuthController {
@@ -36,13 +37,13 @@ export class AuthController {
   };
 
   @UseGuards( AuthGuards )
-  @Get('check-token')
+  @Get('/check-token')
   checkToken(@Request() req: Request): UserLogin {
     const user = req['user'];
 
     return {
       user:  user,
-      token: this.authService.tokentPaiload( { id: user.id } ),
+      token: this.authService.tokentPaiload( { id: user._id.toString() } ),
     };
   };
 
