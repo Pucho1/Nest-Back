@@ -16,7 +16,7 @@ import { UserLogin } from './interfaces/user-login';
 import { CheckEmailDto } from './dto/check-email.dto';
 
 @Injectable()
-export class AuthService {
+export class UserService {
 
   constructor(
     @InjectModel(User.name)
@@ -97,11 +97,6 @@ export class AuthService {
     return { user, token };
   };
 
-
-  findAll() {
-    return this.userModel.find(); 
-  };
-
   /**
    * Deveulve un usuario si exixte en bd segun el id pasado
    * @param id id del usuario recibido del front
@@ -114,6 +109,10 @@ export class AuthService {
     const { password, ...rest } = user!.toJSON();
 
     return rest;
+  };
+
+  findAll() {
+    return this.userModel.find(); 
   };
 
   /**
@@ -136,11 +135,15 @@ export class AuthService {
     return access_token;
   };
 
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // };
+  update(id: number, updateAuthDto: any) {
+    return `This action updates a #${id} auth`;
+  };
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} auth`;
-  // };
+  remove(id: number) {
+    return `This action removes a #${id} auth`;
+  };
+
+  findOne(id: number) {
+    return `This action removes a #${id} auth`;
+  };
 };

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthService } from '../auth.service';
+import { UserService } from '../user.service';
 import { JwtPayload } from '../interfaces/jwt-paiload';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class AuthGuards implements CanActivate {
 
   constructor(
     private jwtService: JwtService,
-    private authService:AuthService,
+    private authService:UserService,
   ) {}
 
   async canActivate( context: ExecutionContext ): Promise<boolean> {
