@@ -112,7 +112,7 @@ export class UserService {
   };
 
   findAll() {
-    return this.userModel.find(); 
+    return this.userModel.find().select('-__v'); 
   };
 
   /**
@@ -135,12 +135,15 @@ export class UserService {
     return access_token;
   };
 
-  update(id: number, updateAuthDto: any) {
-    return `This action updates a #${id} auth`;
+  async update(id: string, updateAuthDto: any): Promise<boolean> {
+    const result = await this.userModel.updateOne({ _id: id }, { $set: updateAuthDto });
+    return !! result;
   };
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  removeById(id: string) {
+    const result = this.userModel.deleteOne({_id: id});
+
+    return !!result;
   };
 
   findOne(id: number) {

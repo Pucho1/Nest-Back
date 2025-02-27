@@ -29,11 +29,11 @@ export class GestionController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGestionDto: UpdateUserDto) {
-    return this.userService.update(+id, updateGestionDto);
+    return this.userService.update(id, updateGestionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  removeById(@Param('id') id: string) {
+    return this.userService.removeById(id);
   }
 }
