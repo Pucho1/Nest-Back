@@ -140,9 +140,8 @@ export class UserService {
     return !! result;
   };
 
-  removeById(id: string) {
-    const result = this.userModel.deleteOne({_id: id});
-
+  async removeById(id: string) {
+    const result = await this.userModel.deleteOne({_id: id});
     return !!result;
   };
 
