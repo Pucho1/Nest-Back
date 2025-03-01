@@ -53,9 +53,9 @@ export class UserService {
       // salvo el user en BD tiene que ser con el await sino el error no se controla
       await createdUser.save();
 
-      const {password: _, ...user} = createdUser.toJSON();
+      // const {password: _, ...user} = createdUser.toJSON();
 
-      return user;
+      return createdUser.toJSON();
 
     } catch (error) {
 
@@ -111,10 +111,6 @@ export class UserService {
     return rest;
   };
 
-  findAll() {
-    return this.userModel.find().select('-__v'); 
-  };
-
   /**
    * Comprueba si email pasado existe en BD
    * @param CheckEmailDto Email recibido del front previamente validaddo
@@ -126,6 +122,16 @@ export class UserService {
     return !!haveUser;
   };
 
+  async update(id: string, updateAuthDto: any): Promise<boolean> {
+    const result = await this.userModel.updateOne({ _id: id }, { $set: updateAuthDto });
+    return !! result;
+  };
+
+  async removeById(id: string) {
+    const result = await this.userModel.deleteOne({_id: id});
+    return !!result;
+  };
+
   /**
    * @param payload es el id del user
    * @returns un tokent valido para el usuario autenticado
@@ -135,14 +141,8 @@ export class UserService {
     return access_token;
   };
 
-  async update(id: string, updateAuthDto: any): Promise<boolean> {
-    const result = await this.userModel.updateOne({ _id: id }, { $set: updateAuthDto });
-    return !! result;
-  };
-
-  async removeById(id: string) {
-    const result = await this.userModel.deleteOne({_id: id});
-    return !!result;
+  findAll() {
+    return this.userModel.find().select('-password').select('-__v'); 
   };
 
   findOne(id: number) {

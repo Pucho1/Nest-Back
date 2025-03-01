@@ -9,10 +9,10 @@ import { UpdateUserDto } from './dto/update-auth.dto';
 export class GestionController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('/create-user')
   create(@Body() createGestionDto: CreateUserDto) {
     return this.userService.create(createGestionDto);
-  }
+  };
 
   // @UseGuards( AuthGuards ) 
   @Get()
