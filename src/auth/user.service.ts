@@ -14,6 +14,8 @@ import { JwtPayload } from './interfaces/jwt-paiload';
 import { RegisterDto } from './dto/register.dto';
 import { UserLogin } from './interfaces/user-login';
 import { CheckEmailDto } from './dto/check-email.dto';
+import { UpdateUserDto } from './dto/update-auth.dto';
+import { ResponseUpdate } from './interfaces/reponse-update';
 
 @Injectable()
 export class UserService {
@@ -122,9 +124,14 @@ export class UserService {
     return !!haveUser;
   };
 
-  async update(id: string, updateAuthDto: any): Promise<boolean> {
-    const result = await this.userModel.updateOne({ _id: id }, { $set: updateAuthDto });
-    return !! result;
+  async update(id: string, UpdateUserDto: UpdateUserDto ): Promise<ResponseUpdate> {
+    const result = await this.userModel.updateOne({ _id: id }, { $set: UpdateUserDto });
+
+    if (result) {
+      const updatedUser = await this.findUserById(id);
+      return { userUdated: updatedUser, updatedSuccess: true };
+    }
+    return { userUdated: null, updatedSuccess: false };
   };
 
   async removeById(id: string) {
@@ -145,7 +152,10 @@ export class UserService {
     return this.userModel.find().select('-password').select('-__v'); 
   };
 
-  findOne(id: number) {
-    return `This action removes a #${id} auth`;
+  async findOne(id: string) {
+    const result = await this.userModel.findOne({_id: id});
+
+    return result;
+
   };
 };

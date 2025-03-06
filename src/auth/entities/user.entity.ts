@@ -17,11 +17,25 @@ export class User {
 	@Prop({required: true, minlength: 6})
 	password?: string;
 
+	//<---- No obligatorios  ---->
+
 	@Prop({default: true})
 	isActive: boolean;
 
-	@Prop({type: [String], default: ['user']})
-	roles: string[];
+	@Prop({default: ''})
+	imageUrl: string;
+
+	@Prop({default: null})
+	phonNunber: string;
+
+	@Prop({default: 'user'})
+	roles: string;
+
+	@Prop({type: [String], default: ['']})
+	StoresClient: string[];
+
+	@Prop({default: null})
+	conectedTime: number;
 
 };
 
